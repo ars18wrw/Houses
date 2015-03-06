@@ -58,6 +58,11 @@ public class Houses {
         double x = 0;
         double y = 0;
         boolean isGood = true;
+        // this bool val specifises, whether there was a contact
+        // in an angle point. true = means yes. if true and you
+        // have
+        boolean isAngle = false;
+
         for (int i = 0; i < 4*n+2; i++)
             for (int j = i; j < 4*n+2; j++) {
                 isGood = true;
@@ -81,27 +86,14 @@ public class Houses {
                 if (isGood == false) {
                     continue;
                 }
-                a = (pointsY[j] - pointsY[i]) /  (pointsX[j] - pointsX[i]);
-                b = pointsY[i] - a*pointsX[i];
+                a = (double) (pointsY[j] - pointsY[i]) /  (pointsX[j] - pointsX[i]);
+                b =(double) pointsY[i] - a*pointsX[i];
 
 
 
                 // check for all houses
                 for (int k = 1; k <=n; k++) {
                     // left-down & left-up
-//                    tempA = (pointsY[4*(k-1)+2] - pointsY[4*(k-1)+1]) /  (pointsX[4*(k-1)+2] - pointsX[4*(k-1)+1]);
-//                    tempB = pointsY[i] - a*pointsX[i];
-//                    if (tempA == a) {
-//                        isGood = false;
-//                        break;
-//                    }
-//                    // peresechenie
-//                    x = (tempB - b)/(a - tempA);
-//                    y = a*x+b;
-//                    if (pointsY[4*(k-1)+1] < y && y < pointsY[4*(k-1)+2]) {
-//                        isGood = false;
-//                        break;
-//                    }
 
                     if ( pointsY[4*(k-1)+1] < a*pointsX[4*(k-1)+1] + b && a*pointsX[4*(k-1)+1] + b < pointsY[4*(k-1)+2]) {
                         isGood = false;
@@ -112,21 +104,7 @@ public class Houses {
 
 
                     // left-up & right-up
-                    tempA = (pointsY[4*(k-1)+3] - pointsY[4*(k-1)+2]) /  (pointsX[4*(k-1)+3] - pointsX[4*(k-1)+2]);
-                    tempB = pointsY[i] - a*pointsX[i];
-                    if (tempA == a) {
-                        isGood = false;
-                        break;
-                    }
-                    // peresechenie
-                    x = (tempB - b)/(a - tempA);
-                    y = a*x+b;
-                    if (pointsX[4*(k-1)+2] < x && x < pointsX[4*(k-1)+3]) {
-                        isGood = false;
-                        break;
-                    }
-                    // right-up & right-down
-//                    tempA = (pointsY[4*(k-1)+4] - pointsY[4*(k-1)+3]) /  (pointsX[4*(k-1)+4] - pointsX[4*(k-1)+3]);
+//                    tempA = (pointsY[4*(k-1)+3] - pointsY[4*(k-1)+2]) /  (pointsX[4*(k-1)+3] - pointsX[4*(k-1)+2]);
 //                    tempB = pointsY[i] - a*pointsX[i];
 //                    if (tempA == a) {
 //                        isGood = false;
@@ -135,36 +113,111 @@ public class Houses {
 //                    // peresechenie
 //                    x = (tempB - b)/(a - tempA);
 //                    y = a*x+b;
-//                    if (pointsY[4*(k-1)+4] < y && y < pointsY[4*(k-1)+3]) {
+//                    if (pointsX[4*(k-1)+2] < x && x < pointsX[4*(k-1)+3]) {
 //                        isGood = false;
 //                        break;
 //                    }
 //
+                    if ((a*pointsX[4*(k-1)+2] + b - pointsY[4*(k-1)+2])*(a*pointsX[4*(k-1)+3] + b - pointsY[4*(k-1)+3]) < 0) {
+                        isGood = false;
+                        break;
+                    }
+
+                    // right-up & right-down//
 
                     if ( pointsY[4*(k-1)+4] < a*pointsX[4*(k-1)+3] + b && a*pointsX[4*(k-1)+3] + b < pointsY[4*(k-1)+3]) {
                         isGood = false;
                         break;
                     }
 
-
-
-
-
                     // right-down & left-down
-                    tempA = (pointsY[4*(k-1)+1] - pointsY[4*(k-1)+4]) /  (pointsX[4*(k-1)+1] - pointsX[4*(k-1)+4]);
-                    tempB = pointsY[i] - a*pointsX[i];
-                    if (tempA == a) {
-                        isGood = false;
-                        break;
-                    }
-                    // peresechenie
-                    x = (tempB - b)/(a - tempA);
-                    y = a*x+b;
-                    if (pointsX[4*(k-1)+1] < x && x < pointsX[4*(k-1)+4]) {
+//                    tempA = (pointsY[4*(k-1)+1] - pointsY[4*(k-1)+4]) /  (pointsX[4*(k-1)+1] - pointsX[4*(k-1)+4]);
+//                    tempB = pointsY[i] - a*pointsX[i];
+//                    if (tempA == a) {
+//                        isGood = false;
+//                        break;
+//                    }
+//                    // peresechenie
+//                    x = (tempB - b)/(a - tempA);
+//                    y = a*x+b;
+//                    if (pointsX[4*(k-1)+1] < x && x < pointsX[4*(k-1)+4]) {
+//                        isGood = false;
+//                        break;
+//                    }
+//
+
+                    if ((a*pointsX[4*(k-1)+1] + b - pointsY[4*(k-1)+1])*(a*pointsX[4*(k-1)+4] + b - pointsY[4*(k-1)+4]) < 0) {
                         isGood = false;
                         break;
                     }
 
+
+
+
+                    // here we should check diagonal-contact
+                    if (a == 1) {
+                        // 2 points
+                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+3]) {
+                            isGood = false;
+                            break;
+                        }
+                        // 3 points
+                        if (Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+1]) {
+                            break;
+                        }
+                        if (Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+3]) {
+                            isGood = false;
+                            break;
+                        }
+
+                        // 4 points
+                        if (Math.max(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+1])
+                            break;
+                        if (Math.min(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+3])
+                            break;
+                        if (Math.min(pointsX[i], pointsX[j]) < pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) > pointsX[4*(k-1)+3]) {
+                            isGood = false;
+                            break;
+                        }
+                    }
+                    if (a == -1) {
+                        // 2 points
+                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+4]) {
+                            isGood = false;
+                            break;
+                        }
+                        // 3 points
+                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+4]) {
+                            break;
+                        }
+                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+2]) {
+                            isGood = false;
+                            break;
+                        }
+
+                        // 4 points
+                        if (Math.min(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+4])
+                            break;
+                        if (Math.max(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+2])
+                            break;
+                        if (Math.min(pointsX[i], pointsX[j]) < pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) > pointsX[4*(k-1)+4]) {
+                            isGood = false;
+                            break;
+                        }
+                    }
+
+
+
+
+
+//                    if (pointsY[4*(k-1)+1] == a*pointsX[4*(k-1)+1] + b && pointsY[4*(k-1)+3] == a*pointsX[4*(k-1)+3] + b) {
+//                        isGood = false;
+//                        break;
+//                    }
+//                    if (pointsY[4*(k-1)+2] == a*pointsX[4*(k-1)+2] + b && pointsY[4*(k-1)+4] == a*pointsX[4*(k-1)+4] + b) {
+//                        isGood = false;
+//                        break;
+//                    }
 
 
 
