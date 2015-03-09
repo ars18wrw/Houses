@@ -58,10 +58,6 @@ public class Houses {
         double x = 0;
         double y = 0;
         boolean isGood = true;
-        // this bool val specifises, whether there was a contact
-        // in an angle point. true = means yes. if true and you
-        // have
-        boolean isAngle = false;
 
         for (int i = 0; i < 4*n+2; i++)
             for (int j = i; j < 4*n+2; j++) {
@@ -80,6 +76,12 @@ public class Houses {
                             break;
                         }
                     }
+                    if (isGood == false) {
+                        continue;
+                    }
+                    ways[i][j] = Math.sqrt((pointsX[i] - pointsX[j]) * (pointsX[i] - pointsX[j]) +
+                            (pointsY[i] - pointsY[j]) * (pointsY[i] - pointsY[j]));
+                    ways[j][i] = ways[i][j];
                    continue;
                 }
 
@@ -99,128 +101,82 @@ public class Houses {
                         isGood = false;
                         break;
                     }
-
-
-
-
                     // left-up & right-up
-//                    tempA = (pointsY[4*(k-1)+3] - pointsY[4*(k-1)+2]) /  (pointsX[4*(k-1)+3] - pointsX[4*(k-1)+2]);
-//                    tempB = pointsY[i] - a*pointsX[i];
-//                    if (tempA == a) {
-//                        isGood = false;
-//                        break;
-//                    }
-//                    // peresechenie
-//                    x = (tempB - b)/(a - tempA);
-//                    y = a*x+b;
-//                    if (pointsX[4*(k-1)+2] < x && x < pointsX[4*(k-1)+3]) {
-//                        isGood = false;
-//                        break;
-//                    }
-//
                     if ((a*pointsX[4*(k-1)+2] + b - pointsY[4*(k-1)+2])*(a*pointsX[4*(k-1)+3] + b - pointsY[4*(k-1)+3]) < 0) {
                         isGood = false;
                         break;
                     }
-
                     // right-up & right-down//
-
                     if ( pointsY[4*(k-1)+4] < a*pointsX[4*(k-1)+3] + b && a*pointsX[4*(k-1)+3] + b < pointsY[4*(k-1)+3]) {
                         isGood = false;
                         break;
                     }
-
                     // right-down & left-down
-//                    tempA = (pointsY[4*(k-1)+1] - pointsY[4*(k-1)+4]) /  (pointsX[4*(k-1)+1] - pointsX[4*(k-1)+4]);
-//                    tempB = pointsY[i] - a*pointsX[i];
-//                    if (tempA == a) {
-//                        isGood = false;
-//                        break;
-//                    }
-//                    // peresechenie
-//                    x = (tempB - b)/(a - tempA);
-//                    y = a*x+b;
-//                    if (pointsX[4*(k-1)+1] < x && x < pointsX[4*(k-1)+4]) {
-//                        isGood = false;
-//                        break;
-//                    }
-//
-
                     if ((a*pointsX[4*(k-1)+1] + b - pointsY[4*(k-1)+1])*(a*pointsX[4*(k-1)+4] + b - pointsY[4*(k-1)+4]) < 0) {
                         isGood = false;
                         break;
                     }
 
-
-
-
                     // here we should check diagonal-contact
                     if (a == 1) {
-                        // 2 points
-                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+3]) {
+                        if (Math.min(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+3]) {
                             isGood = false;
                             break;
                         }
-                        // 3 points
-                        if (Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+1]) {
-                            break;
-                        }
-                        if (Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+3]) {
-                            isGood = false;
-                            break;
-                        }
-
-                        // 4 points
-                        if (Math.max(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+1])
-                            break;
-                        if (Math.min(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+3])
-                            break;
-                        if (Math.min(pointsX[i], pointsX[j]) < pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) > pointsX[4*(k-1)+3]) {
-                            isGood = false;
-                            break;
-                        }
+//                        // 2 points
+//                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+3]) {
+//                            isGood = false;
+//                            break;
+//                        }
+//                        // 3 points
+//                        if (Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+1]) {
+//                            break;
+//                        }
+//                        if (Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+3]) {
+//                            isGood = false;
+//                            break;
+//                        }
+//
+//
+//                        // 4 points
+//                        if (Math.max(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+1])
+//                            break;
+//                        if (Math.min(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+3])
+//                            break;
+//                        if (Math.min(pointsX[i], pointsX[j]) < pointsX[4*(k-1)+1] && Math.max(pointsX[i], pointsX[j]) > pointsX[4*(k-1)+3]) {
+//                            isGood = false;
+//                            break;
+//                        }
                     }
                     if (a == -1) {
-                        // 2 points
-                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+4]) {
+                        if (Math.min(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+4]) {
                             isGood = false;
                             break;
                         }
-                        // 3 points
-                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+4]) {
-                            break;
-                        }
-                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+2]) {
-                            isGood = false;
-                            break;
-                        }
-
-                        // 4 points
-                        if (Math.min(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+4])
-                            break;
-                        if (Math.max(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+2])
-                            break;
-                        if (Math.min(pointsX[i], pointsX[j]) < pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) > pointsX[4*(k-1)+4]) {
-                            isGood = false;
-                            break;
-                        }
+//                        // 2 points
+//                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+4]) {
+//                            isGood = false;
+//                            break;
+//                        }
+//                        // 3 points
+//                        if (Math.min(pointsX[i], pointsX[j]) == pointsX[4*(k-1)+4]) {
+//                            break;
+//                        }
+//                        if (Math.min(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+2]) {
+//                            isGood = false;
+//                            break;
+//                        }
+//
+//                        // 4 points
+//                        if (Math.min(pointsX[i], pointsX[j]) >= pointsX[4*(k-1)+4])
+//                            break;
+//                        if (Math.max(pointsX[i], pointsX[j]) <= pointsX[4*(k-1)+2])
+//                            break;
+//                        if (Math.min(pointsX[i], pointsX[j]) < pointsX[4*(k-1)+2] && Math.max(pointsX[i], pointsX[j]) > pointsX[4*(k-1)+4]) {
+//                            isGood = false;
+//                            break;
+//                        }
                     }
-
-
-
-
-
-//                    if (pointsY[4*(k-1)+1] == a*pointsX[4*(k-1)+1] + b && pointsY[4*(k-1)+3] == a*pointsX[4*(k-1)+3] + b) {
-//                        isGood = false;
-//                        break;
-//                    }
-//                    if (pointsY[4*(k-1)+2] == a*pointsX[4*(k-1)+2] + b && pointsY[4*(k-1)+4] == a*pointsX[4*(k-1)+4] + b) {
-//                        isGood = false;
-//                        break;
-//                    }
-
-
-
 
                 }
 
@@ -231,6 +187,8 @@ public class Houses {
                     ways[j][i] = ways[i][j];
                 }
             }
+
+        // TEMP
         Locale.setDefault(Locale.US);
         for (int i = 0; i < 4*n+2; i++) {
             for (int j = 0; j < 4*n+2; j++)
@@ -238,6 +196,16 @@ public class Houses {
                 System.out.format("%.3g ", ways[i][j] );
             System.out.println();
         }
+
+        // Floid
+        for (int i = 0; i < 4*n+2; ++i)
+            for (int j = 0; j < 4*n+2; ++j)
+                for (int k = 0; k < 4*n+2; ++k)
+                    ways[i][j] = Math.min(ways[i][j], ways[i][k] + ways[k][j]);
+
+        // Floid m
+
+        System.out.println(ways[0][4*n+1]);
     }
 }
 
